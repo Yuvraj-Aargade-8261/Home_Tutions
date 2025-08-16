@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "462902403089",
+    "project_id": "home-tutions-30fff",
+    "storage_bucket": "home-tutions-30fff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462902403089:android:27475ea23085878c43d1b0",
+        "android_client_info": {
+          "package_name": "com.example.hometutions"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvTXU7aEM1m1-UmdZb1or5u7QYZXB85xk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
