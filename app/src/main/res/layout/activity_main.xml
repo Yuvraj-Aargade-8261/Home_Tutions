@@ -1,19 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@drawable/main_gradient_background"
+    android:fitsSystemWindows="true">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Top decorative elements -->
+    <View
+        android:id="@+id/topDecorativeShape1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-75dp"
+        android:layout_marginEnd="-75dp"
+        android:background="@drawable/decorative_circle"
+        android:alpha="0.1" />
+
+    <View
+        android:id="@+id/topDecorativeShape2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/decorative_circle"
+        android:alpha="0.08" />
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/headerSection"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="150dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/appLogoMain"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_home_tuition"
+            android:contentDescription="Home Tuitions Logo" />
+
+        <!-- Welcome Text -->
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.9" />
+
+        <TextView
+            android:id="@+id/appNameMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home Tuitions"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/subtitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your role to get started"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.8" />
+
+    </LinearLayout>
+
+    <!-- Role Selection Container -->
+    <LinearLayout
+        android:id="@+id/roleSelectionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomInfoSection"
+        android:layout_below="@id/headerSection"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp">
+
+        <!-- Student Role Button -->
+        <LinearLayout
+            android:id="@+id/studentRoleButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/student_role_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="24dp">
+
+            <!-- Student Icon -->
+            <ImageView
+                android:id="@+id/studentIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="Student Icon"
+                android:src="@drawable/ic_student_white" />
+
+            <!-- Student Text Container -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/studentRoleTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="I'm a Student"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/studentRoleDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.9"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Find qualified teachers for home tuition"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <!-- Arrow Icon -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Forward Arrow"
+                android:src="@drawable/ic_arrow_forward_white" />
+
+        </LinearLayout>
+
+        <!-- Teacher Role Button -->
+        <LinearLayout
+            android:id="@+id/teacherRoleButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/teacher_role_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="24dp">
+
+            <!-- Teacher Icon -->
+            <ImageView
+                android:id="@+id/teacherIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="Teacher Icon"
+                android:src="@drawable/ic_teacher_white" />
+
+            <!-- Teacher Text Container -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/teacherRoleTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="I'm a Teacher"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/teacherRoleDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.9"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Register to offer home tuition services"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <!-- Arrow Icon -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Forward Arrow"
+                android:src="@drawable/ic_arrow_forward_white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Bottom Info Section -->
+    <LinearLayout
+        android:id="@+id/bottomInfoSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp">
+
+        <!-- Features Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓ Verified Teachers    ✓ Secure Platform    ✓ Easy Communication"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="10sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.8"
+            android:textAlignment="center"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Help Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Need help? Contact support"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.7"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+    <!-- Floating decorative elements -->
+    <View
+        android:id="@+id/floatingElement1"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/floating_dot"
+        android:alpha="0.5" />
+
+    <View
+        android:id="@+id/floatingElement2"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="350dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/floating_dot"
+        android:alpha="0.4" />
+
+    <View
+        android:id="@+id/floatingElement3"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="500dp"
+        android:background="@drawable/floating_dot"
+        android:alpha="0.3" />
+
+</RelativeLayout>

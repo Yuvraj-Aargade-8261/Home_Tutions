@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash_gradient_background"
+    android:fitsSystemWindows="true">
+
+    <!-- Top decorative element -->
+    <View
+        android:id="@+id/topDecorativeCircle"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-100dp"
+        android:layout_marginEnd="-100dp"
+        android:background="@drawable/decorative_circle"
+        android:alpha="0.1" />
+
+    <!-- Bottom decorative element -->
+    <View
+        android:id="@+id/bottomDecorativeCircle"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="-150dp"
+        android:layout_marginStart="-150dp"
+        android:background="@drawable/decorative_circle"
+        android:alpha="0.08" />
+
+    <!-- Main content container -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- App Icon Container -->
+        <RelativeLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp">
+
+            <!-- Icon background circle -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="8dp" />
+
+            <!-- App Icon -->
+            <ImageView
+                android:id="@+id/appIcon"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_home_tuition"
+                android:contentDescription="Home Tuitions App Icon" />
+
+        </RelativeLayout>
+
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home Tuitions"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            android:layout_marginBottom="8dp" />
+
+        <!-- App Tagline -->
+        <TextView
+            android:id="@+id/appTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connecting Teachers &amp; Students"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.9"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:indeterminateTint="@color/white"
+            android:alpha="0.8" />
+
+    </LinearLayout>
+
+    <!-- Bottom branding -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find the perfect tutor"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.7" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="from the comfort of your home"
+            android:textColor="@color/splash_text_secondary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.7"
+            android:layout_marginTop="2dp" />
+
+    </LinearLayout>
+
+    <!-- Floating elements for visual interest -->
+    <View
+        android:id="@+id/floatingElement1"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="180dp"
+        android:background="@drawable/floating_dot"
+        android:alpha="0.6" />
+
+    <View
+        android:id="@+id/floatingElement2"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="280dp"
+        android:layout_marginEnd="80dp"
+        android:background="@drawable/floating_dot"
+        android:alpha="0.4" />
+
+    <View
+        android:id="@+id/floatingElement3"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="420dp"
+        android:background="@drawable/floating_dot"
+        android:alpha="0.5" />
+
+</RelativeLayout>
