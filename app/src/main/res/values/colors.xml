@@ -11,6 +11,14 @@
 
     <color name="warning_orange">#FF9800</color>
     <color name="error_red">#F44336</color>
+    <!-- Background Colors -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="main_background">#F8FAFC</color>
+    <color name="surface_background">#F1F5F9</color>
+
+    <!-- Icon Tint -->
+    <color name="icon_tint">#9CA3AF</color>
+    <color name="icon_primary">#667eea</color>
 
 
 
@@ -44,4 +52,26 @@
     <color name="warning_color">#D69E2E</color>
     <color name="info_color">#3182CE</color>
     <color name="primary_color">#667eea</color>
+    <color name="gray">#9CA3AF</color>
+
+
+    <!-- Primary Brand Colors -->
+    <color name="primary_500">#2563EB</color>
+    <color name="primary_200">#BFDBFE</color>
+    <color name="primary_50">#EFF6FF</color>
+
+    <!-- Surface Colors -->
+    <color name="background_primary">#F8FAFC</color>
+    <color name="surface_primary">#FFFFFF</color>
+    <color name="surface_variant">#F1F5F9</color>
+
+
+    <color name="error">#EF4444</color>
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+
+    <!-- Additional Colors -->
+    <color name="divider">#E2E8F0</color>
+    <color name="notification_red">#DC2626</color>
+
 </resources>

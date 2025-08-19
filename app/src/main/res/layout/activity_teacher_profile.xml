@@ -111,12 +111,12 @@
                             android:id="@+id/teacherNameText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:text="Dr. Priya Sharma"
+                            android:text="-----"
                             android:textColor="@color/black"
                             android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="center" />
+                            android:textStyle="bold" />
 
                         <!-- Verified Badge -->
                         <LinearLayout
@@ -170,17 +170,10 @@
                                 android:id="@+id/ratingText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="4.8"
+                                android:text="---"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" (127 reviews)"
-                                android:textColor="@color/input_hint_color"
-                                android:textSize="14sp" />
 
                         </LinearLayout>
 
@@ -201,128 +194,7 @@
                                 android:id="@+id/experienceText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="8 years exp."
-                                android:textColor="@color/black"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Contact Info Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
-
-                        <!-- Location -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_location"
-                                android:layout_marginEnd="4dp" />
-
-                            <TextView
-                                android:id="@+id/locationText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Koregaon Park, Pune"
-                                android:textColor="@color/input_hint_color"
-                                android:textSize="14sp" />
-
-                        </LinearLayout>
-
-                        <!-- Response Time -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_clock"
-                                android:layout_marginEnd="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="~2 hrs response"
-                                android:textColor="@color/input_hint_color"
-                                android:textSize="14sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Action Buttons Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <!-- Contact Button -->
-                        <LinearLayout
-                            android:id="@+id/contactButton"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/primary_button_background"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:layout_marginEnd="8dp"
-                            android:clickable="true"
-                            android:focusable="true">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_phone"
-                                android:layout_marginEnd="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Contact"
-                                android:textColor="@color/black"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <!-- Message Button -->
-                        <LinearLayout
-                            android:id="@+id/messageButton"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/secondary_button_background"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:layout_marginStart="8dp"
-                            android:clickable="true"
-                            android:focusable="true">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_message"
-                                android:layout_marginEnd="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Message"
+                                android:text="-----"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -390,7 +262,7 @@
                                 android:id="@+id/ageText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="32 years"
+                                android:text="------"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -421,7 +293,7 @@
                                 android:id="@+id/genderText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Female"
+                                android:text="-----"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -455,7 +327,7 @@
                             android:id="@+id/emailText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="priya.sharma@email.com"
+                            android:text="-------"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -488,7 +360,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="123, MG Road, Koregaon Park, Pune, Maharashtra - 411001"
+                            android:text="--------"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -547,7 +419,7 @@
                             android:id="@+id/qualificationText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Ph.D in Mathematics"
+                            android:text="-------"
                             android:textColor="@color/black"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -580,7 +452,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Indian Institute of Technology, Mumbai"
+                            android:text="-------"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -1556,7 +1428,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="+91 98765 43210"
+                                    android:text="-------"
                                     android:textColor="@color/black"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />

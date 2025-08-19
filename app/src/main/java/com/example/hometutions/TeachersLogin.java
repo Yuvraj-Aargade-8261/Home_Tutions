@@ -71,11 +71,19 @@ public class TeachersLogin extends AppCompatActivity implements FirebaseAuthServ
         loadingContainer = findViewById(R.id.loadingContainer);
         forgotPasswordText = findViewById(R.id.forgotPasswordText);
         
-        // Check if views are found
-        if (backButton == null || emailEditText == null || passwordEditText == null || 
-            loginButton == null || registerButton == null || loginFormContainer == null || 
-            loadingContainer == null || forgotPasswordText == null) {
-            throw new IllegalStateException("One or more required views not found in layout");
+        // Check if views are found; don't crash, just warn for easier diagnostics
+        java.util.List<String> missing = new java.util.ArrayList<>();
+        if (backButton == null) missing.add("backButton");
+        if (emailEditText == null) missing.add("teacherIdEditText");
+        if (passwordEditText == null) missing.add("passwordEditText");
+        if (loginButton == null) missing.add("loginButton");
+        if (registerButton == null) missing.add("signUpText");
+        if (loginFormContainer == null) missing.add("loginFormSection");
+        if (loadingContainer == null) missing.add("loadingContainer");
+        if (forgotPasswordText == null) missing.add("forgotPasswordText");
+        if (!missing.isEmpty()) {
+            android.util.Log.e("TeachersLogin", "Missing views: " + missing);
+            Toast.makeText(this, "Some views not found: " + missing, Toast.LENGTH_LONG).show();
         }
         
         // Initially hide loading container
@@ -229,8 +237,10 @@ public class TeachersLogin extends AppCompatActivity implements FirebaseAuthServ
         if (user != null) {
             isLoginSuccessful = true;
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-            // Navigate to teacher profile
-            Intent intent = new Intent(TeachersLogin.this, TeacherProfile.class);
+            // Navigate to teacher home with bottom navigation (default to Profile tab)
+            Intent intent = new Intent(TeachersLogin.this, TeacherHomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("open_profile", true);
             intent.putExtra("teacher_id", user.getUid());
             startActivity(intent);
             finish();

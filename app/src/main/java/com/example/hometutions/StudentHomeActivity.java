@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.hometutions.fragments.StudentProfileFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -17,6 +19,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private BottomNavigationView bottomNavigationView;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,35 @@ public class StudentHomeActivity extends AppCompatActivity {
             return;
         }
         
+        initializeViews();
+        setupBottomNavigation();
+        
         // Load default fragment (Dashboard)
         loadFragment(new StudentDashboard());
+    }
+    
+    private void initializeViews() {
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+    }
+    
+    private void setupBottomNavigation() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                selectedFragment = new StudentDashboard();
+            } else if (itemId == R.id.nav_profile) {
+                selectedFragment = new StudentProfileFragment();
+            }
+            
+            if (selectedFragment != null) {
+                loadFragment(selectedFragment);
+                return true;
+            }
+            
+            return false;
+        });
     }
     
     private void loadFragment(Fragment fragment) {
@@ -45,8 +75,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         // Replace the current fragment
         transaction.replace(R.id.fragment_container, fragment);
         
-        // Add to back stack for navigation
-        transaction.addToBackStack(null);
+        // Don't add to back stack for bottom navigation
         transaction.commit();
     }
     
@@ -61,11 +90,14 @@ public class StudentHomeActivity extends AppCompatActivity {
     
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            super.onBackPressed();
-        } else {
+        // Check if we're on the home fragment
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (currentFragment instanceof StudentDashboard) {
             // Show exit confirmation
             showExitConfirmation();
+        } else {
+            // Navigate back to home
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
     }
     

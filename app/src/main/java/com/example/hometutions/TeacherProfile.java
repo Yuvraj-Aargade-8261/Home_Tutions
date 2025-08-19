@@ -52,7 +52,6 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
     private TextView ageText, genderText, emailText, addressText;
     private TextView qualificationText, institutionText;
     private LinearLayout subjectsContainer, streamsContainer;
-    private LinearLayout contactButton, messageButton;
     private CardView profilePhotoCard;
     private LinearLayout mainContent;
     
@@ -103,8 +102,7 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
         ratingText = findViewById(R.id.ratingText);
         experienceText = findViewById(R.id.experienceText);
         locationText = findViewById(R.id.locationText);
-        contactButton = findViewById(R.id.contactButton);
-        messageButton = findViewById(R.id.messageButton);
+        // contactButton/messageButton removed from layout
         profilePhotoCard = findViewById(R.id.profilePhotoCard);
         mainContent = findViewById(R.id.mainContent);
         
@@ -118,15 +116,29 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
         subjectsContainer = findViewById(R.id.subjectsContainer);
         streamsContainer = findViewById(R.id.streamsContainer);
         
-        // Check if views are found
-        if (backButton == null || moreOptionsButton == null || profilePhoto == null || 
-            teacherNameText == null || ratingText == null || experienceText == null || 
-            locationText == null || contactButton == null || messageButton == null || 
-            profilePhotoCard == null || mainContent == null || ageText == null || 
-            genderText == null || emailText == null || addressText == null || 
-            qualificationText == null || institutionText == null || 
-            subjectsContainer == null || streamsContainer == null) {
-            throw new IllegalStateException("One or more required views not found in layout");
+        // Check if views are found; log instead of crashing
+        java.util.List<String> missingViews = new java.util.ArrayList<>();
+        if (backButton == null) missingViews.add("backButton");
+        if (moreOptionsButton == null) missingViews.add("moreOptionsButton");
+        if (profilePhoto == null) missingViews.add("profilePhoto");
+        if (teacherNameText == null) missingViews.add("teacherNameText");
+        if (ratingText == null) missingViews.add("ratingText");
+        if (experienceText == null) missingViews.add("experienceText");
+        if (locationText == null) missingViews.add("locationText");
+        // no contact/message buttons
+        if (profilePhotoCard == null) missingViews.add("profilePhotoCard");
+        if (mainContent == null) missingViews.add("mainContent");
+        if (ageText == null) missingViews.add("ageText");
+        if (genderText == null) missingViews.add("genderText");
+        if (emailText == null) missingViews.add("emailText");
+        if (addressText == null) missingViews.add("addressText");
+        if (qualificationText == null) missingViews.add("qualificationText");
+        if (institutionText == null) missingViews.add("institutionText");
+        if (subjectsContainer == null) missingViews.add("subjectsContainer");
+        if (streamsContainer == null) missingViews.add("streamsContainer");
+        if (!missingViews.isEmpty()) {
+            android.util.Log.e(TAG, "Missing views: " + missingViews);
+            android.widget.Toast.makeText(this, "Some views not found: " + missingViews, android.widget.Toast.LENGTH_LONG).show();
         }
     }
     
@@ -151,35 +163,7 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
             showMoreOptionsMenu();
         });
         
-        contactButton.setOnClickListener(v -> {
-            String phoneNumber = null;
-            if (currentTeacher != null) {
-                // Try multiple phone number fields
-                if (currentTeacher.getPhoneNumber() != null && !currentTeacher.getPhoneNumber().isEmpty()) {
-                    phoneNumber = currentTeacher.getPhoneNumber();
-                } else if (currentTeacher.getPhone() != null && !currentTeacher.getPhone().isEmpty()) {
-                    phoneNumber = currentTeacher.getPhone();
-                }
-            }
-            
-            if (phoneNumber != null) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(android.net.Uri.parse("tel:" + phoneNumber));
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to initiate phone call", e);
-                    Toast.makeText(this, "Unable to make phone call", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Phone number not available", Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        messageButton.setOnClickListener(v -> {
-            // TODO: Implement messaging functionality
-            Toast.makeText(this, "Messaging feature coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        // removed contact/message listeners
     }
     
     private void loadTeacherData() {
@@ -263,17 +247,9 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
         Log.d(TAG, "Profile Image URL: " + teacher.getProfileImageUrl());
         
         // Update basic info
-        if (teacher.getFullName() != null && !teacher.getFullName().isEmpty()) {
-            teacherNameText.setText(teacher.getFullName());
-        } else {
-            teacherNameText.setText("Teacher Name");
-        }
+        setTextSafely(teacherNameText, (teacher.getFullName() != null && !teacher.getFullName().isEmpty()) ? teacher.getFullName() : "Teacher Name");
         
-        if (teacher.getRating() != null && !teacher.getRating().isEmpty()) {
-            ratingText.setText(teacher.getRating());
-        } else {
-            ratingText.setText("4.5");
-        }
+        setTextSafely(ratingText, (teacher.getRating() != null && !teacher.getRating().isEmpty()) ? teacher.getRating() : "4.5");
         
         // Update experience - try multiple sources
         String experienceText = "";
@@ -289,53 +265,29 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
         } else {
             experienceText = "5 years exp.";
         }
-        this.experienceText.setText(experienceText);
+        setTextSafely(this.experienceText, experienceText);
         
-        if (teacher.getLocation() != null && !teacher.getLocation().isEmpty()) {
-            locationText.setText(teacher.getLocation());
-        } else {
-            locationText.setText("Location");
-        }
+        setTextSafely(locationText, (teacher.getLocation() != null && !teacher.getLocation().isEmpty()) ? teacher.getLocation() : "Location");
         
         // Update personal information
-        if (teacher.getAge() > 0) {
-            ageText.setText(teacher.getAge() + " years");
-        } else {
-            ageText.setText("Age not specified");
-        }
+        setTextSafely(ageText, (teacher.getAge() > 0) ? (teacher.getAge() + " years") : "Age not specified");
         
-        if (teacher.getGender() != null && !teacher.getGender().isEmpty()) {
-            genderText.setText(teacher.getGender());
-        } else {
-            genderText.setText("Not specified");
-        }
+        setTextSafely(genderText, (teacher.getGender() != null && !teacher.getGender().isEmpty()) ? teacher.getGender() : "Not specified");
         
-        if (teacher.getEmail() != null && !teacher.getEmail().isEmpty()) {
-            emailText.setText(teacher.getEmail());
-        } else {
-            emailText.setText("Email not available");
-        }
+        setTextSafely(emailText, (teacher.getEmail() != null && !teacher.getEmail().isEmpty()) ? teacher.getEmail() : "Email not available");
         
-        if (teacher.getAddress() != null && !teacher.getAddress().isEmpty()) {
-            addressText.setText(teacher.getAddress());
-        } else {
-            addressText.setText("Address not available");
-        }
+        setTextSafely(addressText, (teacher.getAddress() != null && !teacher.getAddress().isEmpty()) ? teacher.getAddress() : "Address not available");
         
         // Update educational qualifications
         if (teacher.getHighestQualification() != null && !teacher.getHighestQualification().isEmpty()) {
-            qualificationText.setText(teacher.getHighestQualification());
+            setTextSafely(qualificationText, teacher.getHighestQualification());
         } else if (teacher.getQualification() != null && !teacher.getQualification().isEmpty()) {
-            qualificationText.setText(teacher.getQualification());
+            setTextSafely(qualificationText, teacher.getQualification());
         } else {
-            qualificationText.setText("Qualification not specified");
+            setTextSafely(qualificationText, "Qualification not specified");
         }
         
-        if (teacher.getInstitution() != null && !teacher.getInstitution().isEmpty()) {
-            institutionText.setText(teacher.getInstitution());
-        } else {
-            institutionText.setText("Institution not specified");
-        }
+        setTextSafely(institutionText, (teacher.getInstitution() != null && !teacher.getInstitution().isEmpty()) ? teacher.getInstitution() : "Institution not specified");
         
         // Update subjects and streams
         updateSubjectsAndStreams(teacher);
@@ -354,26 +306,31 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
     }
     
     private void showDefaultData() {
-        teacherNameText.setText("Teacher Name");
-        ratingText.setText("4.5");
-        experienceText.setText("5 years exp.");
-        locationText.setText("Location");
+        setTextSafely(teacherNameText, "Teacher Name");
+        setTextSafely(ratingText, "4.5");
+        setTextSafely(experienceText, "5 years exp.");
+        setTextSafely(locationText, "Location");
         
         // Set default personal information
-        ageText.setText("Age not specified");
-        genderText.setText("Not specified");
-        emailText.setText("Email not available");
-        addressText.setText("Address not available");
+        setTextSafely(ageText, "Age not specified");
+        setTextSafely(genderText, "Not specified");
+        setTextSafely(emailText, "Email not available");
+        setTextSafely(addressText, "Address not available");
         
         // Set default educational information
-        qualificationText.setText("Qualification not specified");
-        institutionText.setText("Institution not specified");
+        setTextSafely(qualificationText, "Qualification not specified");
+        setTextSafely(institutionText, "Institution not specified");
         
         // Set default subjects and streams
         updateSubjectsAndStreams(null);
         
         // Animate the content appearance
         AnimationUtils.fadeIn(mainContent, 500, null);
+    }
+
+    private void setTextSafely(TextView view, String text) {
+        if (view == null) return;
+        view.setText(text);
     }
     
     private void setupAnimations() {
@@ -397,9 +354,8 @@ public class TeacherProfile extends AppCompatActivity implements FirebaseAuthSer
             public void onAnimationRepeat(Animation animation) {}
         });
         
-        // Animate action buttons with staggered delay
-        AnimationUtils.slideUpWithDelay(contactButton, 300, 200, null);
-        AnimationUtils.slideUpWithDelay(messageButton, 300, 300, null);
+        // Animate action buttons with staggered delay (if present)
+        // removed contact/message animations
     }
     
     private void showMoreOptionsMenu() {

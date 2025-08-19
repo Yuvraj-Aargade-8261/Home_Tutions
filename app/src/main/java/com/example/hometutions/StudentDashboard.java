@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hometutions.adapters.TeacherAdapter;
 import com.example.hometutions.models.Teacher;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,9 +46,11 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
     private Spinner tuitionStreamSpinner;
     private Spinner subjectFilterSpinner;
     private Spinner distanceRangeSpinner;
+    private TextInputEditText locationEditText;
     private RecyclerView recommendedTeachersRecyclerView;
     private TeacherAdapter teacherAdapter;
     private List<Teacher> teachersList;
+    private List<Teacher> allTeachersList; // master list for filtering
 
     public StudentDashboard() {
         // Required empty public constructor
@@ -60,6 +63,7 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
         currentUser = mAuth.getCurrentUser();
         databaseRef = FirebaseDatabase.getInstance().getReference();
         teachersList = new ArrayList<>();
+        allTeachersList = new ArrayList<>();
     }
 
     @Override
@@ -88,6 +92,7 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
         tuitionStreamSpinner = rootView.findViewById(R.id.tuitionStreamSpinner);
         subjectFilterSpinner = rootView.findViewById(R.id.subjectFilterSpinner);
         distanceRangeSpinner = rootView.findViewById(R.id.distanceRangeSpinner);
+        locationEditText = rootView.findViewById(R.id.locationEditText);
         recommendedTeachersRecyclerView = rootView.findViewById(R.id.recommendedTeachersRecyclerView);
     }
     
@@ -101,34 +106,98 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
     private void fetchStudentNameFromDatabase() {
         if (currentUser == null) return;
         
-        DatabaseReference studentRef = databaseRef.child("students").child(currentUser.getUid());
+        final String uid = currentUser.getUid();
+        DatabaseReference studentRef = databaseRef.child("students").child(uid);
         studentRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Fetch student name
-                    String fullName = dataSnapshot.child("fullName").getValue(String.class);
-                    if (fullName != null && !fullName.trim().isEmpty()) {
-                        studentNameText.setText(fullName);
-                    } else {
-                        // Fallback to email extraction if no name in database
-                        String fallbackName = getStudentNameFromEmail();
-                        studentNameText.setText(fallbackName);
+                    // Fetch student name (handle non-string types safely)
+                    String fullName = getStringSafely(dataSnapshot, "fullName");
+                    if (fullName == null || fullName.trim().isEmpty()) {
+                        fullName = getStudentNameFromEmail();
                     }
-                    
-                    // Fetch and display profile image
-                    String profilePhotoUrl = dataSnapshot.child("profilePhotoUrl").getValue(String.class);
+                    studentNameText.setText(fullName);
+
+                    // Fetch and display profile image (Base64 or URL)
+                    String profilePhotoUrl = getStringSafely(dataSnapshot, "profilePhotoUrl");
                     if (profilePhotoUrl != null && !profilePhotoUrl.trim().isEmpty()) {
                         displayProfileImage(profilePhotoUrl);
                     } else {
-                        // Set default student icon if no profile image
                         profilePhoto.setImageResource(R.drawable.ic_student_white);
                     }
                 } else {
-                    // Fallback to email extraction if no data in database
-                    String fallbackName = getStudentNameFromEmail();
-                    studentNameText.setText(fallbackName);
-                    profilePhoto.setImageResource(R.drawable.ic_student_white);
+                    // Fallback 1: search by userId field equal to auth UID
+                    databaseRef.child("students").orderByChild("userId").equalTo(uid)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot byUserId) {
+                                if (byUserId.exists()) {
+                                    for (DataSnapshot child : byUserId.getChildren()) {
+                                        // Reuse same handling
+                                        onDataChange(child);
+                                        return;
+                                    }
+                                } else {
+                                    // Fallback 2: search by email field
+                                    String email = currentUser.getEmail();
+                                    databaseRef.child("students").orderByChild("email").equalTo(email)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot byEmail) {
+                                                    if (byEmail.exists()) {
+                                                        for (DataSnapshot child : byEmail.getChildren()) {
+                                                            onDataChange(child);
+                                                            return;
+                                                        }
+                                                    } else {
+                                                        // Final fallback: scan all and match uid/email/userId
+                                                        databaseRef.child("students").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot all) {
+                                                                for (DataSnapshot child : all.getChildren()) {
+                                                                    String key = child.getKey();
+                                                                    String childUserId = String.valueOf(child.child("userId").getValue());
+                                                                    String childEmail = String.valueOf(child.child("email").getValue());
+                                                                    if ((key != null && key.equals(uid)) ||
+                                                                        (childUserId != null && childUserId.equals(uid)) ||
+                                                                        (childEmail != null && childEmail.equals(email))) {
+                                                                        onDataChange(child);
+                                                                        return;
+                                                                    }
+                                                                }
+                                                                String fallbackName = getStudentNameFromEmail();
+                                                                studentNameText.setText(fallbackName);
+                                                                profilePhoto.setImageResource(R.drawable.ic_student_white);
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                                String fallbackName = getStudentNameFromEmail();
+                                                                studentNameText.setText(fallbackName);
+                                                                profilePhoto.setImageResource(R.drawable.ic_student_white);
+                                                            }
+                                                        });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    String fallbackName = getStudentNameFromEmail();
+                                                    studentNameText.setText(fallbackName);
+                                                    profilePhoto.setImageResource(R.drawable.ic_student_white);
+                                                }
+                                            });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                String fallbackName = getStudentNameFromEmail();
+                                studentNameText.setText(fallbackName);
+                                profilePhoto.setImageResource(R.drawable.ic_student_white);
+                            }
+                        });
                 }
             }
 
@@ -183,15 +252,34 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
                 }
                 Log.d(TAG, "Profile image displayed successfully from Base64 data");
             } else {
-                // Regular URL, try to load with Glide
-                // For now, set default icon since we're not using Glide for student profile
-                profilePhoto.setImageResource(R.drawable.ic_student_white);
-                Log.d(TAG, "Profile image is URL, using default icon");
+                // Regular URL, load with Glide
+                try {
+                    com.bumptech.glide.Glide.with(this)
+                            .load(profileImageData)
+                            .placeholder(R.drawable.ic_student_white)
+                            .error(R.drawable.ic_student_white)
+                            .circleCrop()
+                            .into(profilePhoto);
+                } catch (Exception e) {
+                    profilePhoto.setImageResource(R.drawable.ic_student_white);
+                }
+                Log.d(TAG, "Profile image loaded from URL");
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to decode profile image: " + e.getMessage());
             // Set default student icon on error
             profilePhoto.setImageResource(R.drawable.ic_student_white);
+        }
+    }
+
+    private String getStringSafely(DataSnapshot parent, String key) {
+        try {
+            Object value = parent.child(key).getValue();
+            if (value == null) return null;
+            return String.valueOf(value);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to read '" + key + "' as String: " + e.getMessage());
+            return null;
         }
     }
     
@@ -214,12 +302,13 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
         teachersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                allTeachersList.clear();
                 teachersList.clear();
                 for (DataSnapshot teacherSnapshot : dataSnapshot.getChildren()) {
                     Teacher teacher = teacherSnapshot.getValue(Teacher.class);
                     if (teacher != null) {
                         teacher.setId(teacherSnapshot.getKey());
-                        teachersList.add(teacher);
+                        allTeachersList.add(teacher);
                         
                         // Debug logging
                         Log.d(TAG, "Loaded teacher: " + teacher.getFullName());
@@ -233,12 +322,12 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
                     }
                 }
                 
-                // Always notify adapter after loading data
-                teacherAdapter.notifyDataSetChanged();
-                Log.d(TAG, "Loaded " + teachersList.size() + " teachers from database");
+                // Apply current filters to fill visible list
+                applyFilters();
+                Log.d(TAG, "Loaded " + allTeachersList.size() + " teachers from database");
                 
                 // If no teachers loaded from database, load sample data
-                if (teachersList.isEmpty()) {
+                if (allTeachersList.isEmpty()) {
                     Log.d(TAG, "No teachers found in database, loading sample data");
                     loadSampleTeachers();
                 }
@@ -255,6 +344,7 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
     
     private void loadSampleTeachers() {
         teachersList.clear();
+        allTeachersList.clear();
         
         // Create sample teachers with proper data structure
         Teacher teacher1 = new Teacher();
@@ -296,12 +386,11 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
         teacher3.setRating("4.7");
         teacher3.setVerified(false);
         
-        teachersList.add(teacher1);
-        teachersList.add(teacher2);
-        teachersList.add(teacher3);
-        
-        teacherAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + teachersList.size() + " sample teachers");
+        allTeachersList.add(teacher1);
+        allTeachersList.add(teacher2);
+        allTeachersList.add(teacher3);
+        applyFilters();
+        Log.d(TAG, "Loaded " + allTeachersList.size() + " sample teachers");
     }
     
     private void setupSpinners() {
@@ -326,9 +415,7 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
     
     private void setupClickListeners() {
         // Search button click listener
-        rootView.findViewById(R.id.searchButton).setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Search functionality coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        rootView.findViewById(R.id.searchButton).setOnClickListener(v -> performSearch());
         
         // View all buttons
         rootView.findViewById(R.id.viewAllRecommended).setOnClickListener(v -> {
@@ -340,6 +427,82 @@ public class StudentDashboard extends Fragment implements TeacherAdapter.OnTeach
         rootView.findViewById(R.id.notificationButton).setOnClickListener(v -> {
             Toast.makeText(requireContext(), "Notifications coming soon!", Toast.LENGTH_SHORT).show();
         });
+
+        // Auto-apply filters on spinner changes
+        subjectFilterSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                performSearch();
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) { }
+        });
+
+        tuitionStreamSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                performSearch();
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) { }
+        });
+    }
+
+    private void performSearch() {
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        String selectedStream = tuitionStreamSpinner.getSelectedItem() != null ? tuitionStreamSpinner.getSelectedItem().toString() : "All Streams";
+        String selectedSubject = subjectFilterSpinner.getSelectedItem() != null ? subjectFilterSpinner.getSelectedItem().toString() : "All Subjects";
+        String locationQuery = locationEditText != null && locationEditText.getText() != null ? locationEditText.getText().toString().trim() : "";
+
+        teachersList.clear();
+        for (Teacher teacher : allTeachersList) {
+            if (teacher == null) continue;
+
+            boolean matchesStream = true;
+            if (!"All Streams".equalsIgnoreCase(selectedStream)) {
+                List<String> streams = teacher.getTeachingStreams();
+                matchesStream = streams != null && containsIgnoreCase(streams, selectedStream);
+            }
+
+            boolean matchesSubject = true;
+            if (!"All Subjects".equalsIgnoreCase(selectedSubject)) {
+                List<String> subjects = teacher.getSubjectsTaught();
+                String subjectsStr = teacher.getSubjects();
+                matchesSubject = (subjects != null && containsIgnoreCase(subjects, selectedSubject))
+                        || (subjectsStr != null && subjectsStr.toLowerCase().contains(selectedSubject.toLowerCase()));
+            }
+
+            boolean matchesLocation = true;
+            if (!locationQuery.isEmpty()) {
+                String address = teacher.getAddress();
+                String location = teacher.getLocation();
+                matchesLocation = (address != null && address.toLowerCase().contains(locationQuery.toLowerCase()))
+                        || (location != null && location.toLowerCase().contains(locationQuery.toLowerCase()));
+            }
+
+            if (matchesStream && matchesSubject && matchesLocation) {
+                teachersList.add(teacher);
+            }
+        }
+
+        teacherAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Search filters applied. Results: " + teachersList.size());
+        if (teachersList.isEmpty()) {
+            Toast.makeText(requireContext(), "No teachers found. Try different filters.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean containsIgnoreCase(List<String> list, String query) {
+        if (list == null || query == null) return false;
+        for (String item : list) {
+            if (item != null && item.equalsIgnoreCase(query)) return true;
+        }
+        return false;
     }
     
     @Override

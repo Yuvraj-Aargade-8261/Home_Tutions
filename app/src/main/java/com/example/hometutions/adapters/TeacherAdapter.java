@@ -100,9 +100,13 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.TeacherV
 
             viewProfileButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onTeacherClick(teachers.get(position));
-                }
+                if (position == RecyclerView.NO_POSITION) return;
+                Teacher t = teachers.get(position);
+                android.content.Context ctx = itemView.getContext();
+                android.content.Intent intent = new android.content.Intent(ctx, com.example.hometutions.ViewProfileOfTeacher.class);
+                String tid = t.getId() != null ? t.getId() : t.getUserId();
+                intent.putExtra("teacher_id", tid);
+                ctx.startActivity(intent);
             });
 
             contactButton.setOnClickListener(v -> {
